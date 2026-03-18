@@ -68,6 +68,11 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState(0);
   const startTimeRef = useRef<number>(Date.now());
 
+  const handleLineClick = (index: number) => {
+    setCurrentLine(index);
+    startTimeRef.current = Date.now() - lyrics[index].delay;
+  };
+
   useEffect(() => {
     if (currentLine < lyrics.length - 1) {
       const timer = setTimeout(
@@ -97,7 +102,11 @@ export default function Home() {
       </div>
 
       {/* Lyrics below */}
-      <WordsDisplay lyrics={lyrics} currentLine={currentLine} />
+      <WordsDisplay
+        lyrics={lyrics}
+        currentLine={currentLine}
+        onLineClick={handleLineClick}
+      />
     </div>
   );
 }
