@@ -101,7 +101,7 @@ export default function WordsDisplay({
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="h-full overflow-y-auto px-8 no-scrollbar"
+        className="h-full overflow-y-auto px-8 no-scrollbar snap-y snap-mandatory"
       >
         <div className="space-y-4 py-[100px]">
           {lyrics.map((lyric, index) => {
@@ -121,7 +121,7 @@ export default function WordsDisplay({
                   onLineClick?.(index);
                   setAutoScroll(true);
                 }}
-                className={`w-fit transition-all duration-300 text-4xl md:text-6xl font-bold text-black font-display leading-[0.95] underline decoration-transparent hover:decoration-black cursor-pointer ${
+                className={`w-fit transition-all duration-300 text-4xl md:text-6xl font-bold text-black font-display leading-[0.95] underline decoration-transparent hover:decoration-black cursor-pointer snap-center ${
                   isCentered
                     ? "opacity-100 blur-0"
                     : isActive
