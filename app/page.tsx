@@ -3,10 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import MediaDisplay from "./components/MediaDisplay";
 import WordsDisplay from "./components/WordsDisplay";
+import PlayerControls from "./components/PlayerControls";
+import phraseData from "../public/phrases.json";
 
-interface Lyric {
+interface Phrase {
   text: string;
-  delay: number;
+  start: number;
+  end: number;
 }
 
 interface MediaItem {
@@ -16,18 +19,9 @@ interface MediaItem {
   endDelay: number;
 }
 
-const lyrics: Lyric[] = [
-  { text: "Hi! I'm Xander Beaulac.", delay: 0 },
-  { text: "I build websites and make music,", delay: 3000 },
-  { text: "usually above 6000 feet.", delay: 4500 },
-  { text: "I'm a junior at Chapman University,", delay: 7500 },
-  { text: "studying Software Engineering", delay: 9000 },
-  { text: "and Music Technology.", delay: 10500 },
-  { text: "I love to run, hike,", delay: 13500 },
-  { text: "rock climb, and ski.", delay: 15000 },
-  { text: "I just had my 21st birthday,", delay: 18000 },
-  { text: "where I jumped out of a plane.", delay: 19500 },
-];
+// Load pre-generated phrases
+const phrases: Phrase[] = phraseData.phrases;
+const AUDIO_URL = phraseData.audioUrl;
 
 const media: MediaItem[] = [
   { src: "/images/portrait.jpg", type: "image", startDelay: 0, endDelay: 3000 },
@@ -64,48 +58,102 @@ const media: MediaItem[] = [
 ];
 
 export default function Home() {
-  const [currentLine, setCurrentLine] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const startTimeRef = useRef<number>(Date.now());
+  const [duration, setDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const handleLineClick = (index: number) => {
-    setCurrentLine(index);
-    startTimeRef.current = Date.now() - lyrics[index].delay;
-  };
-
+  // Initialize audio element
   useEffect(() => {
-    if (currentLine < lyrics.length - 1) {
-      const timer = setTimeout(
-        () => {
-          setCurrentLine(currentLine + 1);
-        },
-        lyrics[currentLine + 1].delay - lyrics[currentLine].delay,
-      );
+    const audio = new Audio(AUDIO_URL);
+    audioRef.current = audio;
 
-      return () => clearTimeout(timer);
-    }
-  }, [currentLine]);
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(Date.now() - startTimeRef.current);
-    }, 100);
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
 
-    return () => clearInterval(interval);
+      // Find current phrase based on time
+      for (let i = 0; i < phrases.length; i++) {
+        if (
+          audio.currentTime >= phrases[i].start &&
+          audio.currentTime < phrases[i].end
+        ) {
+          setCurrentPhraseIndex(i);
+          break;
+        }
+      }
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+    };
+
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleEnded);
+
+    return () => {
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("ended", handleEnded);
+      audio.pause();
+    };
   }, []);
 
+  const handlePlayPause = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleNext = () => {
+    // Skip to last phrase (CTA)
+    if (!audioRef.current) return;
+    const lastPhrase = phrases[phrases.length - 1];
+    audioRef.current.currentTime = lastPhrase.start;
+    setCurrentPhraseIndex(phrases.length - 1);
+  };
+
+  const handlePrevious = () => {
+    // Restart from beginning
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = 0;
+    setCurrentPhraseIndex(0);
+  };
+
+  const handleSeek = (time: number) => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = time;
+  };
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-[#fefae0] flex flex-col">
       {/* Media on top */}
       <div className="flex-1">
-        <MediaDisplay currentTime={currentTime} media={media} />
+        <MediaDisplay currentTime={currentTime * 1000} media={media} />
       </div>
 
-      {/* Lyrics below */}
-      <WordsDisplay
-        lyrics={lyrics}
-        currentLine={currentLine}
-        onLineClick={handleLineClick}
+      {/* Captions in the middle */}
+      <WordsDisplay phrases={phrases} currentPhraseIndex={currentPhraseIndex} />
+
+      {/* Player controls at the bottom */}
+      <PlayerControls
+        currentTime={currentTime}
+        duration={duration}
+        isPlaying={isPlaying}
+        onPlayPause={handlePlayPause}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        onSeek={handleSeek}
       />
     </div>
   );
