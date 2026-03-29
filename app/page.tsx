@@ -1,160 +1,160 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import MediaDisplay from "./components/MediaDisplay";
-import WordsDisplay from "./components/WordsDisplay";
-import PlayerControls from "./components/PlayerControls";
-import phraseData from "../public/phrases.json";
-
-interface Phrase {
-  text: string;
-  start: number;
-  end: number;
-}
-
-interface MediaItem {
-  src: string;
-  type: "image" | "video";
-  startDelay: number;
-  endDelay: number;
-}
-
-// Load pre-generated phrases
-const phrases: Phrase[] = phraseData.phrases;
-const AUDIO_URL = phraseData.audioUrl;
-
-const media: MediaItem[] = [
-  { src: "/images/portrait.jpg", type: "image", startDelay: 0, endDelay: 3000 },
-  {
-    src: "/images/coding.jpg",
-    type: "image",
-    startDelay: 3000,
-    endDelay: 6000,
-  },
-  {
-    src: "/images/mountain.jpg",
-    type: "image",
-    startDelay: 4500,
-    endDelay: 7500,
-  },
-  {
-    src: "/images/chapman.jpg",
-    type: "image",
-    startDelay: 7500,
-    endDelay: 12000,
-  },
-  {
-    src: "/images/outdoor.jpg",
-    type: "image",
-    startDelay: 13500,
-    endDelay: 16500,
-  },
-  {
-    src: "/images/skydiving.jpg",
-    type: "image",
-    startDelay: 18000,
-    endDelay: 21000,
-  },
-];
+import Image from "next/image";
 
 export default function Home() {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Initialize audio element
-  useEffect(() => {
-    const audio = new Audio(AUDIO_URL);
-    audioRef.current = audio;
-
-    const handleLoadedMetadata = () => {
-      setDuration(audio.duration);
-    };
-
-    const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
-
-      // Find current phrase based on time
-      for (let i = 0; i < phrases.length; i++) {
-        if (
-          audio.currentTime >= phrases[i].start &&
-          audio.currentTime < phrases[i].end
-        ) {
-          setCurrentPhraseIndex(i);
-          break;
-        }
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-    };
-
-    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("ended", handleEnded);
-      audio.pause();
-    };
-  }, []);
-
-  const handlePlayPause = () => {
-    if (!audioRef.current) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleNext = () => {
-    // Skip to last phrase (CTA)
-    if (!audioRef.current) return;
-    const lastPhrase = phrases[phrases.length - 1];
-    audioRef.current.currentTime = lastPhrase.start;
-    setCurrentPhraseIndex(phrases.length - 1);
-  };
-
-  const handlePrevious = () => {
-    // Restart from beginning
-    if (!audioRef.current) return;
-    audioRef.current.currentTime = 0;
-    setCurrentPhraseIndex(0);
-  };
-
-  const handleSeek = (time: number) => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime = time;
-  };
-
   return (
-    <div className="min-h-screen bg-[#fefae0] flex flex-col">
-      {/* Media on top */}
-      <div className="flex-1">
-        <MediaDisplay currentTime={currentTime * 1000} media={media} />
+    <div className="min-h-screen cornsilk p-8 flex items-center justify-center">
+      <div className="max-w-3xl text-lg font-medium text-black-forest">
+        <div className="flex items-center gap-8 mb-8">
+          {/* <div className="flex justify-center items-center w-56 h-56 bg-sunlit-clay rounded-2xl">
+            <div className="flex justify-center items-center w-52 h-52 bg-copperwood rounded-xl"> */}
+          <Image
+            src="/me2.jpg"
+            alt="Xander Beaulac"
+            width={3024}
+            height={4032}
+            className="rounded-lg w-48 h-48 object-cover"
+          />
+          {/* </div>
+          </div> */}
+          <div>
+            <div className="font-bold text-4xl">Xander Beaulac</div>
+            <div className="text-xl font-semibold opacity-80">
+              Software engineer, founder, and recording artist
+            </div>
+          </div>
+        </div>
+        Hi, I'm Xander Beaulac
+        <br />
+        I build software that helps people
+        <br />
+        I also make music with my friends
+        <br />
+        I also like to run, ski, and hike in the mountains
+        <br />
+        My passions for tech and music began when I was 12
+        <br />
+        When I was 13, I released a meme rap song called{" "}
+        <a
+          href="https://open.spotify.com/track/3IpWC0lKJEy3PjOPgImN59?si=d87ee5fe424e4b60"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          Krusty Krab
+        </a>{" "}
+        that blew up
+        <br />
+        Starting highschool, I developed a{" "}
+        <a
+          href="https://github.com/xbeaulac/incline-village-access"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          mobile app
+        </a>{" "}
+        to manage access to my local beach
+        <br />
+        When I was 16, I taught myself pixel art and generated an{" "}
+        <a
+          href="https://github.com/xbeaulac/pixel-people"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          NFT collection
+        </a>
+        <br />
+        At 17, I learned more about web development and designed a{" "}
+        <a
+          href="https://github.com/xbeaulac/usahomeloans-crm"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          CRM
+        </a>{" "}
+        for a family friend
+        <br />
+        On my 18th birthday, I released an{" "}
+        <a
+          href="https://open.spotify.com/album/2J8MvpbTonmhKTDkaFnobZ?si=3RH98G9pSTSmmSR3Fwj-og"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          album
+        </a>{" "}
+        of songs I had made over the years
+        <br />
+        When I started college, I founded the{" "}
+        <a
+          href="https://www.instagram.com/runningclubcu/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          Chapman Run Club
+        </a>{" "}
+        because they didn't have one
+        <br />
+        I took a gap semester and moved to SF having never visited and knowing
+        no one
+        <br />
+        After meeting a founder on the street, I build their landing page 2
+        hours later
+        <br />I joined their team and helped build{" "}
+        <a
+          href="https://drafted.ai"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          Drafted
+        </a>
+        , an AI floor plan generator
+        <br />
+        Last winter, I was a ski instructor and loved teaching and being outside
+        on my feet
+        <br />
+        Back at school, I've been working on{" "}
+        <a
+          href="https://stoodious.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          Stoodious
+        </a>
+        , a degree planner for me and my friends
+        <br />
+        This summer, I'd love to help you with your project
+        <br />
+        Check my{" "}
+        <a
+          href="https://docs.google.com/document/d/16AFFCZI-t5xr9_4XJtL9KRd-Lrt2qV9i/edit?usp=sharing&ouid=111632038240813900288&rtpof=true&sd=true"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          resumé
+        </a>
+        <br />
+        Send me a{" "}
+        <a
+          href="sms:+16677863265"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          text
+        </a>{" "}
+        or an{" "}
+        <a
+          href="mailto:hello@xanderbeaulac.com"
+          className="underline hover:text-olive-leaf transition-colors"
+        >
+          email
+        </a>
       </div>
-
-      {/* Captions in the middle */}
-      <WordsDisplay phrases={phrases} currentPhraseIndex={currentPhraseIndex} />
-
-      {/* Player controls at the bottom */}
-      <PlayerControls
-        currentTime={currentTime}
-        duration={duration}
-        isPlaying={isPlaying}
-        onPlayPause={handlePlayPause}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        onSeek={handleSeek}
-      />
     </div>
   );
 }
