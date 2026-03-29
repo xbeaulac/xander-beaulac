@@ -5,8 +5,6 @@ export default function Home() {
     <div className="min-h-screen cornsilk p-8 flex items-center justify-center">
       <div className="max-w-3xl text-lg font-medium text-black-forest">
         <div className="flex items-center gap-8 mb-8">
-          {/* <div className="flex justify-center items-center w-56 h-56 bg-sunlit-clay rounded-2xl">
-            <div className="flex justify-center items-center w-52 h-52 bg-copperwood rounded-xl"> */}
           <Image
             src="/me2.jpg"
             alt="Xander Beaulac"
@@ -14,8 +12,6 @@ export default function Home() {
             height={4032}
             className="rounded-lg w-48 h-48 object-cover"
           />
-          {/* </div>
-          </div> */}
           <div>
             <div className="font-bold text-4xl">Xander Beaulac</div>
             <div className="text-xl font-semibold opacity-80">
@@ -23,15 +19,15 @@ export default function Home() {
             </div>
           </div>
         </div>
-        Hi, I'm Xander Beaulac
+        Hi, I&apos;m Xander Beaulac.
         <br />
-        I build software that helps people
+        I build software that helps people.
         <br />
-        I also make music with my friends
+        I also make music with my friends.
         <br />
-        I also like to run, ski, and hike in the mountains
+        I also like to run, ski, and hike in the mountains.
         <br />
-        My passions for tech and music began when I was 12
+        My passions for tech and music began when I was 12.
         <br />
         When I was 13, I released a meme rap song called{" "}
         <a
@@ -42,7 +38,7 @@ export default function Home() {
         >
           Krusty Krab
         </a>{" "}
-        that blew up
+        that blew up.
         <br />
         Starting highschool, I developed a{" "}
         <a
@@ -53,7 +49,7 @@ export default function Home() {
         >
           mobile app
         </a>{" "}
-        to manage access to my local beach
+        to manage access to my local beach.
         <br />
         When I was 16, I taught myself pixel art and generated an{" "}
         <a
@@ -64,6 +60,7 @@ export default function Home() {
         >
           NFT collection
         </a>
+        .
         <br />
         At 17, I learned more about web development and designed a{" "}
         <a
@@ -74,7 +71,7 @@ export default function Home() {
         >
           CRM
         </a>{" "}
-        for a family friend
+        for a family friend.
         <br />
         On my 18th birthday, I released an{" "}
         <a
@@ -85,7 +82,7 @@ export default function Home() {
         >
           album
         </a>{" "}
-        of songs I had made over the years
+        of songs I had made over the years.
         <br />
         When I started college, I founded the{" "}
         <a
@@ -96,13 +93,13 @@ export default function Home() {
         >
           Chapman Run Club
         </a>{" "}
-        because they didn't have one
+        because they didn&apos;t have one.
         <br />
         I took a gap semester and moved to SF having never visited and knowing
-        no one
+        no one.
         <br />
         After meeting a founder on the street, I build their landing page 2
-        hours later
+        hours later.
         <br />I joined their team and helped build{" "}
         <a
           href="https://drafted.ai"
@@ -112,12 +109,12 @@ export default function Home() {
         >
           Drafted
         </a>
-        , an AI floor plan generator
+        : an AI floor plan generator.
         <br />
         Last winter, I was a ski instructor and loved teaching and being outside
-        on my feet
+        on my feet.
         <br />
-        Back at school, I've been working on{" "}
+        Back at school, I&apos;ve been working on{" "}
         <a
           href="https://stoodious.io"
           target="_blank"
@@ -126,9 +123,9 @@ export default function Home() {
         >
           Stoodious
         </a>
-        , a degree planner for me and my friends
+        : a degree planner for me and my friends.
         <br />
-        This summer, I'd love to help you with your project
+        This summer, I&apos;d love to help you with your project.
         <br />
         Check my{" "}
         <a
@@ -139,6 +136,7 @@ export default function Home() {
         >
           resumé
         </a>
+        .
         <br />
         Send me a{" "}
         <a
@@ -154,6 +152,7 @@ export default function Home() {
         >
           email
         </a>
+        .
       </div>
     </div>
   );
