@@ -6,7 +6,7 @@ export default function Home() {
       <div className="max-w-3xl text-lg font-medium text-black-forest">
         <div className="flex items-center gap-8 mb-8">
           <Image
-            src="/me2.jpg"
+            src="/me.webp"
             alt="Xander Beaulac"
             width={3024}
             height={4032}
