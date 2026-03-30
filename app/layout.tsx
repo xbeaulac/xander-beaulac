@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overscroll-none">
+    <html lang="en" className="bg-cornsilk">
       <body
         className={`${cabinetGrotesk.variable} ${satoshi.variable} antialiased`}
       >
