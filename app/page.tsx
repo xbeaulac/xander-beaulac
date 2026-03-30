@@ -19,7 +19,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        Hi, I&apos;m Xander Beaulac.
+        Hi, I&apos;m Xander.
         <br />
         I build software that helps people.
         <br />
