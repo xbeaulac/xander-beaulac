@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -22,11 +22,6 @@ const satoshi = localFont({
   variable: "--font-satoshi",
   display: "swap",
 });
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-};
 
 export const metadata: Metadata = {
   title: "Xander Beaulac",
@@ -64,9 +59,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-cornsilk">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-      </head>
       <body
         className={`${cabinetGrotesk.variable} ${satoshi.variable} antialiased`}
       >
