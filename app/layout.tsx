@@ -27,6 +27,7 @@ export const metadata: Metadata = {
   title: "Xander Beaulac",
   description:
     "I'm Xander Beaulac, a software engineer, entrepreneur, and recording artist.",
+  viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
   openGraph: {
     title: "Xander Beaulac",
     description:
