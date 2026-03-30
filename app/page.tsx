@@ -3,18 +3,18 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="min-h-screen cornsilk p-4 sm:p-8 flex items-center justify-center">
-      <div className="max-w-3xl text-base sm:text-lg font-medium text-black-forest">
-        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 mb-6 sm:mb-8">
+      <div className="max-w-3xl text-lg font-medium text-black-forest">
+        <div className="flex flex-col sm:flex-row items-center sm:gap-8 gap-4 mb-8">
           <Image
             src="/me.webp"
             alt="Xander Beaulac"
             width={3024}
             height={4032}
-            className="rounded-lg w-32 h-32 sm:w-48 sm:h-48 object-cover shrink-0"
+            className="rounded-lg w-48 h-48 object-cover shrink-0"
           />
-          <div className="text-center sm:text-left">
+          <div>
             <div className="font-bold text-3xl sm:text-4xl">Xander Beaulac</div>
-            <div className="text-lg sm:text-xl font-semibold opacity-80">
+            <div className="text-xl font-semibold opacity-80">
               Software engineer, founder, and recording artist
             </div>
           </div>
