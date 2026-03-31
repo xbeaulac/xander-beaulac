@@ -38,7 +38,7 @@ export function TimelineCard({ item, index }: Props) {
         relative
         w-[24rem]
         mr-6
-        ${item.link ? 'cursor-pointer' : 'cursor-default'}
+        ${item.link ? "cursor-pointer" : "cursor-default"}
         pointer-events-auto
       `}
       style={{
@@ -80,7 +80,9 @@ export function TimelineCard({ item, index }: Props) {
             className="relative w-full"
             style={{ aspectRatio: aspectRatio.toString() }}
           >
-            <figure className={`absolute inset-0 overflow-hidden origin-top-left rounded-lg bg-gray-300 ${item.needsBorder ? 'border border-gray-200' : ''}`}>
+            <figure
+              className={`absolute inset-0 overflow-hidden origin-top-left rounded-lg bg-gray-300 ${item.needsBorder ? "border border-gray-200" : ""}`}
+            >
               {item.videoUrl ? (
                 <video
                   src={item.videoUrl}
