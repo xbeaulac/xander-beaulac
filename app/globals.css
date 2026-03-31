@@ -9,6 +9,9 @@
 
   --font-sans: var(--font-satoshi);
   --font-display: var(--font-cabinet-grotesk);
+
+  /* Custom easing for timeline animations */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body {
@@ -20,4 +23,26 @@ body {
 
 @utility no-scrollbar {
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
+/* Timeline-specific styles */
+body.timeline-page {
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Card 3D perspective — required for the rotateY flip effect */
+.carousel-item {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Smooth font rendering for big titles */
+h1 {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom ease-out-expo transition timing function */
+.ease-out-expo {
+  transition-timing-function: var(--ease-out-expo);
 }
