@@ -15,14 +15,9 @@ export default function TimelinePage() {
 
   return (
     <main className="w-screen h-screen overflow-hidden bg-white">
-      {/* Hero title — sits above the cards, fixed position */}
-      <div className="fixed inset-x-0 top-0 flex items-center justify-center z-[2] pointer-events-none select-none pt-8">
-        <h1 className="text-[clamp(3rem,10vw,9rem)] font-black leading-none tracking-tight text-center mix-blend-multiply text-black">
-          XANDER BEAULAC
-        </h1>
-      </div>
-
-      {/* The timeline */}
+      <h1 className="absolute top-4 leading-[0.90] left-1/2 -translate-x-1/2 text-6xl lg:text-[clamp(3rem,8vw,9rem)] lg:text-nowrap tracking-tight font-black">
+        XANDER BEAULAC
+      </h1>
       <TimelineSection items={timelineItems} />
     </main>
   );

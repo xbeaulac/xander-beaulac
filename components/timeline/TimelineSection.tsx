@@ -9,9 +9,9 @@ interface Props {
   items: TimelineItem[];
 }
 
-const CARD_WIDTH = 450; // px (28.125rem at 16px base)
-const CARD_GAP = 48; // px  (mr-12 = 3rem = 48px)
-const CARD_SLOT = CARD_WIDTH + CARD_GAP; // 498px per card
+const CARD_WIDTH = 384; // px (24rem at 16px base)
+const CARD_GAP = 24; // px  (mr-6 = 1.5rem = 24px)
+const CARD_SLOT = CARD_WIDTH + CARD_GAP; // 408px per card
 
 function getMonthMarkers(items: TimelineItem[]) {
   const markers: { label: string; index: number }[] = [];
@@ -88,7 +88,7 @@ export function TimelineSection({ items }: Props) {
       </div>
 
       {/* Fixed visual carousel */}
-      <div className="fixed inset-0 flex items-center overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 flex items-center overflow-hidden pointer-events-none z-[1]">
         <div className="relative select-none pointer-events-auto">
           <div
             ref={trackRef}
