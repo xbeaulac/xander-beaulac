@@ -1,6 +1,6 @@
 // components/timeline/TimelineSection.tsx
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useLenisScroll } from "./useLenisScroll";
 import { TimelineCard } from "./TimelineCard";
 import { TimelineRuler } from "./TimelineRuler";
@@ -10,9 +10,9 @@ interface Props {
   items: TimelineItem[];
 }
 
-const CARD_WIDTH = 320; // px  (20rem at 16px base)
+const CARD_WIDTH = 450; // px (28.125rem at 16px base)
 const CARD_GAP = 48; // px  (mr-12 = 3rem = 48px)
-const CARD_SLOT = CARD_WIDTH + CARD_GAP; // 368px per card
+const CARD_SLOT = CARD_WIDTH + CARD_GAP; // 498px per card
 
 function getMonthMarkers(items: TimelineItem[]) {
   const markers: { label: string; index: number }[] = [];
@@ -29,70 +29,73 @@ function getMonthMarkers(items: TimelineItem[]) {
 
 export function TimelineSection({ items }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const totalTrackWidth = items.length * CARD_SLOT + 200;
-  const monthMarkers = getMonthMarkers(items);
+  const [isClient, setIsClient] = useState(false);
+
+  // Fix hydration mismatch by only calculating width on client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Simple width calculation - cards + starting padding
+  const totalTrackWidth = CARD_GAP + items.length * CARD_SLOT;
 
   const { getScroll, subscribe } = useLenisScroll(totalTrackWidth);
 
-  // Apply translate3d on each Lenis tick
+  // Simple translate3d - just move the track horizontally based on scroll
   useEffect(() => {
     return subscribe(() => {
       if (trackRef.current) {
-        trackRef.current.style.transform = `translate3d(${getScroll()}px, 0, 0)`;
+        const scrollX = getScroll();
+        trackRef.current.style.transform = `translate3d(${scrollX}px, 0, 0)`;
       }
     });
   }, [getScroll, subscribe]);
 
   return (
     <>
-      {/*
-        Tall scroll container — gives Lenis something to scroll vertically.
-        Height = totalTrackWidth so that scrolling end-to-end maps to the full carousel.
-        overflow-y: scroll so Lenis can attach to it.
-        The div is invisible but captures scroll events.
-      */}
+      {/* Scroll container for Lenis - positioned behind everything */}
       <div
         id="timeline-scroll-container"
-        className="fixed inset-0 overflow-y-scroll no-scrollbar z-[100]"
+        className="fixed inset-0 overflow-y-scroll"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
+          zIndex: -1,
+          pointerEvents: "none",
         }}
       >
-        {/* Inner content taller than wrapper — this is what Lenis scrolls */}
         <div style={{ height: `${totalTrackWidth}px`, width: "1px" }} />
       </div>
 
-      {/* Fixed visual carousel — positioned independently of scroll container */}
-      <div className="fixed inset-0 flex items-center overflow-hidden z-[1] pointer-events-none">
+      {/* Fixed visual carousel */}
+      <div className="fixed inset-0 flex items-center overflow-hidden pointer-events-none">
         <div className="relative select-none pointer-events-auto">
           <div
             ref={trackRef}
             className="flex items-center will-change-transform"
-            style={{ width: `${totalTrackWidth}px` }}
+            style={{ width: `${totalTrackWidth}px`, paddingLeft: `${CARD_GAP}px` }}
           >
+            {/* Just render cards once for now */}
             {items.map((item, i) => (
               <TimelineCard
                 key={item.id}
                 item={item}
                 index={i}
-                getScroll={getScroll}
-                subscribe={subscribe}
               />
             ))}
           </div>
         </div>
       </div>
 
-      {/* Timeline ruler — fixed at bottom */}
-      <TimelineRuler
+      {/* Timeline ruler — HIDDEN FOR NOW */}
+      {/* <TimelineRuler
         items={items}
         monthMarkers={monthMarkers}
         totalWidth={totalTrackWidth}
         cardSlot={CARD_SLOT}
         getScroll={getScroll}
         subscribe={subscribe}
-      />
+      /> */}
     </>
   );
 }

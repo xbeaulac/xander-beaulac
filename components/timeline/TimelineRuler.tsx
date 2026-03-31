@@ -45,21 +45,28 @@ function drawTicks(
   const logicalWidth = canvas.offsetWidth;
   const logicalHeight = canvas.offsetHeight;
 
-  const tickCount = Math.floor(totalRulerWidth / TICK_INTERVAL);
   const viewportCenterX = logicalWidth / 2; // Center of viewport in LOGICAL coordinates
+
+  // For infinite scrolling: calculate which ticks are visible in the viewport
+  // Use modulo to loop the ruler infinitely
+  const scrollOffset = scrollX * RULER_SCALE;
+
+  // Calculate the range of ticks we need to draw (visible area + buffer)
+  const tickStart = Math.floor((0 - scrollOffset - 100) / TICK_INTERVAL);
+  const tickEnd = Math.ceil((logicalWidth - scrollOffset + 100) / TICK_INTERVAL);
 
   // First pass: find the tick closest to viewport center
   let closestTickIndex = -1;
   let minDistance = Infinity;
   const tickPositions: { canvasX: number; rulerX: number; i: number }[] = [];
 
-  for (let i = 0; i <= tickCount; i++) {
+  for (let i = tickStart; i <= tickEnd; i++) {
     const rulerX = i * TICK_INTERVAL;
-    // scrollX is negative when scrolling right, so we need to subtract it
-    const canvasX = rulerX - scrollX * RULER_SCALE;
+    // Apply the scroll offset with RULER_SCALE for parallax
+    const canvasX = rulerX + scrollOffset;
 
-    // Skip ticks outside visible canvas
-    if (canvasX < -10 || canvasX > width + 10) continue;
+    // Skip ticks outside visible canvas (with small buffer)
+    if (canvasX < -10 || canvasX > logicalWidth + 10) continue;
 
     tickPositions.push({ canvasX, rulerX, i });
 
@@ -166,15 +173,18 @@ export function TimelineRuler({
     const unsubscribe = subscribe(() => {
       scrollXRef.current = getScroll();
       if (trackRef.current) {
-        const x = getScroll() * RULER_SCALE;
-        trackRef.current.style.transform = `translate3d(${x}px, 0, 0)`;
+        const scrollX = getScroll();
+        // Apply same modulo wrapping as cards for infinite labels
+        const singleLoopWidth = (items.length * cardSlot);
+        const wrappedX = ((scrollX % singleLoopWidth) - singleLoopWidth) * RULER_SCALE;
+        trackRef.current.style.transform = `translate3d(${wrappedX}px, 0, 0)`;
       }
       redraw();
     });
 
     redraw();
     return unsubscribe;
-  }, [getScroll, subscribe, totalWidth, rulerWidth, labelPositions, mouseX]);
+  }, [getScroll, subscribe, totalWidth, rulerWidth, labelPositions, mouseX, items.length, cardSlot]);
 
   // Track mouse position over ruler
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -208,21 +218,24 @@ export function TimelineRuler({
             <div
               ref={trackRef}
               className="relative will-change-transform"
-              style={{ width: `${rulerWidth}px` }}
+              style={{ width: `${rulerWidth * 3}px` }}
             >
-              {monthMarkers.map((marker) => {
-                // Position label based on the card index × scaled card slot
-                const leftPx = marker.index * cardSlot * RULER_SCALE;
-                return (
-                  <span
-                    key={`${marker.label}-${marker.index}`}
-                    className="absolute text-[10px] font-mono tracking-widest text-black -translate-x-1/2 top-[15px] uppercase"
-                    style={{ left: `${leftPx}px` }}
-                  >
-                    {marker.label}
-                  </span>
-                );
-              })}
+              {/* Render labels 3 times for infinite loop */}
+              {[0, 1, 2].map((loopIndex) =>
+                monthMarkers.map((marker) => {
+                  // Position label based on the card index × scaled card slot + loop offset
+                  const leftPx = (marker.index * cardSlot * RULER_SCALE) + (loopIndex * rulerWidth);
+                  return (
+                    <span
+                      key={`${loopIndex}-${marker.label}-${marker.index}`}
+                      className="absolute text-[10px] font-mono tracking-widest text-black -translate-x-1/2 top-[15px] uppercase"
+                      style={{ left: `${leftPx}px` }}
+                    >
+                      {marker.label}
+                    </span>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

@@ -18,49 +18,35 @@ export function useLenisScroll(totalWidth: number) {
   }, []);
 
   useEffect(() => {
-    // Lenis needs a tall scrollable wrapper to map vertical scroll → horizontal position.
-    // We create a dedicated scroll container div with height = totalWidth so that
-    // scrolling from top to bottom maps to scrolling the full carousel left to right.
-    const scrollContainer = document.getElementById(
-      "timeline-scroll-container",
-    );
+    const scrollContainer = document.getElementById("timeline-scroll-container");
+    if (!scrollContainer) return;
 
-    if (!scrollContainer) {
-      console.error("❌ Scroll container not found! #timeline-scroll-container");
-      return;
-    }
+    const content = scrollContainer.firstElementChild as HTMLElement;
+    if (!content) return;
 
-    console.log("✅ Found scroll container:", scrollContainer);
-    console.log("Container height:", scrollContainer.offsetHeight);
-    console.log("Content height:", scrollContainer.firstElementChild?.scrollHeight);
-
+    // Proper Lenis setup with wrapper and content
+    // Use window as eventsTarget so scroll container doesn't need pointer events
     const lenis = new Lenis({
       wrapper: scrollContainer,
-      content: scrollContainer.firstElementChild as HTMLElement,
+      content: content,
+      eventsTarget: window,
       orientation: "vertical",
-      gestureOrientation: "both", // capture both vertical wheel and horizontal trackpad
       smoothWheel: true,
-      lerp: 0.08, // matches the feel of the original (0.08 = their lerp factor)
+      lerp: 0.08,
       touchMultiplier: 2,
-      wheelEventsTarget: window, // Listen to wheel events on window instead of wrapper
     });
 
     lenisRef.current = lenis;
-    console.log("✅ Lenis initialized:", lenis);
 
-    lenis.on(
-      "scroll",
-      ({ scroll, limit }: { scroll: number; limit: number }) => {
-        console.log("📜 Scroll event:", { scroll, limit });
-        // Map vertical scroll progress (0→1) to horizontal pixel offset (0→-(totalWidth - vw))
-        const progress = limit > 0 ? scroll / limit : 0;
-        const maxX = -(totalWidth - window.innerWidth);
-        scrollXRef.current = progress * maxX;
-        listenersRef.current.forEach((cb) => cb());
-      },
-    );
+    // Listen to Lenis scroll events and map to horizontal position
+    lenis.on("scroll", ({ scroll, limit }: { scroll: number; limit: number }) => {
+      const progress = limit > 0 ? scroll / limit : 0;
+      const maxX = -(totalWidth - window.innerWidth);
+      scrollXRef.current = progress * maxX;
+      listenersRef.current.forEach((cb) => cb());
+    });
 
-    // Lenis needs its own rAF loop
+    // Lenis RAF loop
     let rafId: number;
     const raf = (time: number) => {
       lenis.raf(time);
@@ -69,7 +55,6 @@ export function useLenisScroll(totalWidth: number) {
     rafId = requestAnimationFrame(raf);
 
     return () => {
-      console.log("🧹 Cleaning up Lenis");
       lenis.destroy();
       cancelAnimationFrame(rafId);
     };
