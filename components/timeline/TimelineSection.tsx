@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState } from "react";
 import { useLenisScroll } from "./useLenisScroll";
 import { TimelineCard } from "./TimelineCard";
-import { TimelineRuler } from "./TimelineRuler";
 import type { TimelineItem } from "@/types/timeline";
 
 interface Props {
@@ -30,6 +29,7 @@ function getMonthMarkers(items: TimelineItem[]) {
 export function TimelineSection({ items }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
+  const velocityRef = useRef(0);
 
   // Fix hydration mismatch by only calculating width on client
   useEffect(() => {
@@ -39,17 +39,37 @@ export function TimelineSection({ items }: Props) {
   // Simple width calculation - cards + starting padding
   const totalTrackWidth = CARD_GAP + items.length * CARD_SLOT;
 
-  const { getScroll, subscribe } = useLenisScroll(totalTrackWidth);
+  const { getScroll, subscribe, lenisRef } = useLenisScroll(totalTrackWidth);
 
-  // Simple translate3d - just move the track horizontally based on scroll
+  // Apply translate3d to track and rotateY to cards
   useEffect(() => {
     return subscribe(() => {
-      if (trackRef.current) {
+      if (trackRef.current && lenisRef.current) {
         const scrollX = getScroll();
         trackRef.current.style.transform = `translate3d(${scrollX}px, 0, 0)`;
+
+        // Update velocity for cards
+        const velocity = lenisRef.current.velocity || 0;
+        console.log("velocity:", velocity);
+        velocityRef.current = velocity;
+
+        // Apply 3D rotation to each card's inner wrapper based on velocity
+        const cardInners = trackRef.current.querySelectorAll(
+          ".timeline-card-inner",
+        );
+        // Positive velocity (scrolling down/right) = rotate left side away
+        // Use exponential scaling - higher exponent = harder to reach max
+        const sign = velocity >= 0 ? -1 : 1;
+        const absVelocity = Math.abs(velocity);
+        const rotation = sign * Math.min(75, Math.pow(absVelocity, 1.8) * 0.04);
+        console.log("rotation:", rotation, "cards found:", cardInners.length);
+
+        cardInners.forEach((inner) => {
+          (inner as HTMLElement).style.transform = `rotateY(${rotation}deg)`;
+        });
       }
     });
-  }, [getScroll, subscribe]);
+  }, [getScroll, subscribe, lenisRef]);
 
   return (
     <>
@@ -73,15 +93,14 @@ export function TimelineSection({ items }: Props) {
           <div
             ref={trackRef}
             className="flex items-center will-change-transform"
-            style={{ width: `${totalTrackWidth}px`, paddingLeft: `${CARD_GAP}px` }}
+            style={{
+              width: `${totalTrackWidth}px`,
+              paddingLeft: `${CARD_GAP}px`,
+            }}
           >
             {/* Just render cards once for now */}
             {items.map((item, i) => (
-              <TimelineCard
-                key={item.id}
-                item={item}
-                index={i}
-              />
+              <TimelineCard key={item.id} item={item} index={i} />
             ))}
           </div>
         </div>

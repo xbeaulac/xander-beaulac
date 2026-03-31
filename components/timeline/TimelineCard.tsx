@@ -12,6 +12,7 @@ export function TimelineCard({ item, index }: Props) {
   const CardContent = (
     <article
       className="
+        timeline-card
         relative
         w-[28.125rem]
         mr-12
@@ -19,10 +20,17 @@ export function TimelineCard({ item, index }: Props) {
         pointer-events-auto
       "
       style={{
-        perspective: "1000px",
-        transformStyle: "preserve-3d",
+        perspective: "1200px",
       }}
     >
+      {/* Inner wrapper for 3D transform */}
+      <div
+        className="timeline-card-inner transition-transform duration-300 ease-out"
+        style={{
+          transformStyle: "preserve-3d",
+          transformOrigin: "center center",
+        }}
+      >
       {/* Card content wrapper */}
       <div className="relative">
         {/* Date label — slides in from top on hover */}
@@ -80,6 +88,7 @@ export function TimelineCard({ item, index }: Props) {
             {item.title}
           </div>
         </div>
+      </div>
       </div>
     </article>
   );
