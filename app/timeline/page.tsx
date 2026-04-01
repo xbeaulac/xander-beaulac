@@ -35,7 +35,7 @@ export default function TimelinePage() {
   //   };
   // }, []);
 
-  // Apply translate3d to track and rotateY to cards
+  // Apply translate3d to track and rotateY to cards (desktop only)
   useEffect(() => {
     return subscribe(() => {
       if (trackRef.current && lenisRef.current) {
@@ -164,24 +164,21 @@ export default function TimelinePage() {
           </p>
         </div>
       </div>
-      {/* Scroll container for Lenis */}
+      {/* Scroll container for Lenis - vertical on desktop, horizontal on mobile */}
       <div
         id="timeline-scroll-container"
-        className="fixed inset-0 overflow-x-scroll sm:overflow-x-hidden sm:overflow-y-scroll"
+        className="fixed inset-0 overflow-y-scroll sm:overflow-y-scroll overflow-x-scroll sm:overflow-x-hidden"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           zIndex: -1,
-          pointerEvents: "auto",
+          pointerEvents: "none",
         }}
       >
-        {/* Mobile: horizontal scroll area, Desktop: vertical scroll area */}
+        {/* Desktop: tall element for vertical scroll, Mobile: wide element for horizontal scroll */}
         <div
-          className="h-full w-full sm:h-auto sm:w-px"
-          style={{
-            width: `${totalTrackWidth}px`,
-            height: `${totalTrackWidth}px`
-          }}
+          className="sm:h-auto sm:w-px h-full w-auto"
+          style={{ height: `${totalTrackWidth}px`, width: `${totalTrackWidth}px` }}
         />
       </div>
 
