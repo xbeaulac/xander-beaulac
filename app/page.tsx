@@ -1,183 +1,168 @@
-import Image from "next/image";
+// app/timeline/page.tsx
+"use client";
+import { TimelineCard } from "@/components/timeline/TimelineCard";
+import { useLenisScroll } from "@/components/timeline/useLenisScroll";
+import { timelineItems } from "@/data/timeline";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { useRef, useEffect } from "react";
 
-export default function Home() {
+gsap.registerPlugin(useGSAP);
+
+export default function TimelinePage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const velocityRef = useRef(0);
+
+  const lenisRef = useLenisScroll("timeline-scroll-wrapper");
+
+  // Apply 3D rotation to cards based on velocity
+  useEffect(() => {
+    if (!lenisRef.current) return;
+
+    const unsubscribe = lenisRef.current.on("scroll", () => {
+      if (trackRef.current && lenisRef.current) {
+        const velocity = lenisRef.current.velocity || 0;
+        velocityRef.current = velocity;
+
+        // Apply 3D rotation to each card's inner wrapper based on velocity
+        const cardInners = trackRef.current.querySelectorAll(
+          ".timeline-card-inner",
+        );
+        const sign = velocity >= 0 ? -1 : 1;
+        const absVelocity = Math.abs(velocity);
+        const rotation = sign * Math.min(80, Math.pow(absVelocity, 1.4) * 0.04);
+
+        cardInners.forEach((inner) => {
+          (inner as HTMLElement).style.transform = `rotateY(${rotation}deg)`;
+        });
+      }
+    });
+
+    return () => unsubscribe?.();
+  }, [lenisRef]);
+
+  // GSAP animation sequence
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({ delay: 0.3 });
+
+      const cards = trackRef.current?.querySelectorAll(".timeline-card");
+
+      tl.set(containerRef.current, {
+        display: "block",
+      });
+
+      // 0. Set initial transform state (replaces Tailwind centering)
+      tl.set(headerRef.current, {
+        xPercent: -50,
+        yPercent: -50,
+      });
+
+      // 1. Name in
+      tl.fromTo(
+        nameRef.current,
+        {
+          yPercent: 100,
+        },
+        {
+          yPercent: 0,
+          duration: 0.75,
+          ease: "power3.out",
+        },
+      );
+
+      // 2. Subtitle in
+      tl.fromTo(
+        subtitleRef.current,
+        {
+          yPercent: 100,
+        },
+        {
+          yPercent: 0,
+          duration: 0.75,
+          ease: "power3.out",
+        },
+        "+=0.1",
+      );
+
+      // 3. Header moves up + cards come in AT THE SAME TIME
+      tl.to(
+        headerRef.current,
+        {
+          yPercent: 0, // removes vertical centering
+          top: "1rem", // anchors to top
+          duration: 0.75,
+          ease: "power3.inOut",
+        },
+        "+=0.3",
+      );
+
+      if (cards) {
+        tl.fromTo(
+          cards,
+          {
+            y: "100vh",
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            stagger: 0.08,
+          },
+          "<", // perfectly synced with header movement
+        );
+      }
+    },
+    { scope: containerRef },
+  );
+
   return (
-    <div className="min-h-screen bg-cornsilk flex flex-col">
-      <div className="flex-1 flex items-center justify-center p-4 sm:p-8 mt-16">
-        <div className="max-w-3xl text-lg font-medium text-black-forest">
-          <div className="flex flex-col sm:flex-row items-center sm:gap-8 gap-4 mb-8">
-            <Image
-              src="/me.webp"
-              alt="Xander Beaulac"
-              width={3024}
-              height={4032}
-              className="rounded-lg w-48 h-48 object-cover shrink-0"
-            />
-            <div>
-              <div className="font-bold text-3xl sm:text-4xl">
-                Xander Beaulac
-              </div>
-              <div className="text-xl font-semibold opacity-80">
-                Software engineer, founder, and recording artist
-              </div>
-            </div>
-          </div>
-          Hi, I&apos;m Xander.
-          <br />
-          I build software that helps people.
-          <br />
-          I also make music with my friends.
-          <br />
-          I also like to run, ski, and hike in the mountains.
-          <br />
-          My passions for tech and music began when I was 12.
-          <br />
-          When I was 13, I released a meme rap song called{" "}
-          <a
-            href="https://open.spotify.com/track/3IpWC0lKJEy3PjOPgImN59?si=d87ee5fe424e4b60"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
+    <main
+      ref={containerRef}
+      className="hidden w-screen h-screen overflow-hidden"
+    >
+      <div
+        ref={headerRef}
+        className="absolute w-screen px-4 top-1/2 left-1/2 sm:text-center z-10"
+      >
+        <div className="overflow-hidden">
+          <h1
+            ref={nameRef}
+            className="leading-[0.90] text-4xl sm:text-6xl text-nowrap tracking-tight font-black"
           >
-            Krusty Krab
-          </a>{" "}
-          that blew up.
-          <br />
-          Starting highschool, I developed a{" "}
-          <a
-            href="https://github.com/xbeaulac/incline-village-access"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
+            XANDER BEAULAC
+          </h1>
+        </div>
+        <div className="overflow-hidden mt-2">
+          <p
+            ref={subtitleRef}
+            className="font-mono text-sm lg:text-base text-gray-600"
           >
-            mobile app
-          </a>{" "}
-          to manage access to my local beach.
-          <br />
-          When I was 16, I taught myself pixel art and generated an{" "}
-          <a
-            href="https://github.com/xbeaulac/pixel-people"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            NFT collection
-          </a>
-          .
-          <br />
-          At 17, I learned more about web development and designed a{" "}
-          <a
-            href="https://github.com/xbeaulac/usahomeloans-crm"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            CRM
-          </a>{" "}
-          for a family friend.
-          <br />
-          On my 18th birthday, I released an{" "}
-          <a
-            href="https://open.spotify.com/album/2J8MvpbTonmhKTDkaFnobZ?si=3RH98G9pSTSmmSR3Fwj-og"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            album
-          </a>{" "}
-          of songs I had made over the years.
-          <br />
-          When I started college, I founded the{" "}
-          <a
-            href="https://www.instagram.com/runningclubcu/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            Chapman Run Club
-          </a>{" "}
-          because they didn&apos;t have one.
-          <br />
-          I took a gap semester and moved to SF having never visited and knowing
-          no one.
-          <br />
-          After meeting a founder on the street, I build their landing page 2
-          hours later.
-          <br />I joined their team and helped build{" "}
-          <a
-            href="https://drafted.ai"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            Drafted
-          </a>
-          : an AI floor plan generator.
-          <br />
-          Last winter, I was a ski instructor and loved teaching and being
-          outside on my feet.
-          <br />
-          Back at school, I&apos;ve been working on{" "}
-          <a
-            href="https://stoodious.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            Stoodious
-          </a>
-          : a degree planner for me and my friends.
-          <br />
-          This summer, I&apos;d love to help you with your project.
-          <br />
-          Check my{" "}
-          <a
-            href="https://docs.google.com/document/d/16AFFCZI-t5xr9_4XJtL9KRd-Lrt2qV9i/edit?usp=sharing&ouid=111632038240813900288&rtpof=true&sd=true"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            resumé
-          </a>
-          .
-          <br />
-          Send me a{" "}
-          <a
-            href="sms:+16677863265"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            text
-          </a>{" "}
-          or an{" "}
-          <a
-            href="mailto:hello@xanderbeaulac.com"
-            className="underline hover:text-olive-leaf transition-colors"
-          >
-            email
-          </a>
-          .
+            Software Engineer, Founder, and Recording Artist
+          </p>
         </div>
       </div>
-
-      {/* Mountains SVG - Mobile */}
-      <Image
-        src="/right mountains.svg"
-        alt=""
-        width={1211}
-        height={729}
-        className="w-full h-auto -mt-16 md:hidden"
-        priority
-      />
-
-      {/* Mountains SVG - Desktop */}
-      <Image
-        src="/mountains.svg"
-        alt=""
-        width={2817}
-        height={729}
-        className="hidden md:block w-full h-auto mt-0 lg:-mt-16 xl:-mt-32 2xl:-mt-48"
-        priority
-      />
-    </div>
+      {/* Horizontal scrolling carousel */}
+      <div
+        id="timeline-scroll-wrapper"
+        className="fixed inset-0 flex items-center overflow-x-auto overflow-y-hidden z-[1]"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        <div
+          ref={trackRef}
+          className="flex items-center select-none px-4 sm:px-6 gap-4 sm:gap-6"
+        >
+          {timelineItems.map((item, i) => (
+            <TimelineCard key={item.id} item={item} index={i} />
+          ))}
+        </div>
+      </div>
+    </main>
   );
 }
