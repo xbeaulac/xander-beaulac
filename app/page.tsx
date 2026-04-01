@@ -188,8 +188,7 @@ export default function TimelinePage() {
         ref={emailRef}
         className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20"
       >
-        <div className="font-mono text-sm text-gray-900">
-          <span>Let&apos;s talk: </span>
+        <div className="font-mono text-sm text-gray-900 flex gap-8">
           <a
             href="mailto:hello@xanderbeaulac.com"
             onClick={handleEmailClick}
@@ -209,6 +208,17 @@ export default function TimelinePage() {
               <span
                 className={`absolute bottom-0 left-0 w-full h-px bg-gray-900 origin-left transition-transform duration-300 ease-out ${emailCopied ? "scale-x-0" : "scale-x-0 group-hover:scale-x-100"}`}
               ></span>
+            </span>
+          </a>
+          <a
+            href="https://docs.google.com/document/d/16AFFCZI-t5xr9_4XJtL9KRd-Lrt2qV9i/edit?usp=sharing&ouid=111632038240813900288&rtpof=true&sd=true"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative inline-block group cursor-pointer"
+          >
+            <span className="relative inline-block">
+              resumé
+              <span className="absolute bottom-0 left-0 w-full h-px bg-gray-900 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
             </span>
           </a>
         </div>
