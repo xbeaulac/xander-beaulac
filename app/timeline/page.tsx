@@ -45,7 +45,6 @@ export default function TimelinePage() {
     return () => unsubscribe?.();
   }, [lenisRef]);
 
-
   // GSAP animation sequence
   useGSAP(
     () => {
@@ -135,7 +134,7 @@ export default function TimelinePage() {
         <div className="overflow-hidden">
           <h1
             ref={nameRef}
-            className="leading-[0.90] text-4xl sm:text-5xl lg:text-6xl text-nowrap tracking-tight font-black"
+            className="leading-[0.90] text-4xl sm:text-6xl text-nowrap tracking-tight font-black"
           >
             XANDER BEAULAC
           </h1>
@@ -157,7 +156,7 @@ export default function TimelinePage() {
       >
         <div
           ref={trackRef}
-          className="flex items-center select-none"
+          className="flex items-center select-none px-4 sm:px-6 gap-4 sm:gap-6"
         >
           {timelineItems.map((item, i) => (
             <TimelineCard key={item.id} item={item} index={i} />
