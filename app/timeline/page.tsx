@@ -17,12 +17,13 @@ export default function TimelinePage() {
   const trackRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef(0);
 
-  // Calculate based on desktop size (larger) to ensure enough scroll area
-  const CARD_WIDTH = 384; // 24rem on desktop
-  const CARD_GAP = 24; // mr-6 on desktop
+  // Calculate responsive sizes
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const CARD_WIDTH = isMobile ? window.innerWidth * 0.85 : 384; // 85vw on mobile, 24rem on desktop
+  const CARD_GAP = isMobile ? 16 : 24; // mr-4 on mobile, mr-6 on desktop
   const CARD_SLOT = CARD_WIDTH + CARD_GAP;
 
-  // Simple width calculation - cards + starting padding
+  // Width calculation - cards + starting padding
   const totalTrackWidth = CARD_GAP + timelineItems.length * CARD_SLOT;
 
   const { getScroll, subscribe, lenisRef } = useLenisScroll(totalTrackWidth);
