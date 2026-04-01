@@ -36,7 +36,7 @@ export function TimelineCard({ item }: Props) {
       className={`
         timeline-card
         relative
-        w-[85vw] sm:w-[24rem]
+        w-[75vw] sm:w-[24rem]
         ${item.link ? "cursor-pointer" : "cursor-default"}
         pointer-events-auto
       `}
@@ -125,7 +125,7 @@ export function TimelineCard({ item }: Props) {
                 {item.highlights.slice(0, 3).map((highlight, i) => (
                   <li key={i} className="overflow-hidden">
                     <div
-                      className="text-sm font-mono text-gray-600 flex items-start translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300"
+                      className="text-xs sm:text-sm font-mono text-gray-600 flex items-start translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300"
                       style={{ transitionDelay: `${(i + 1) * 0}ms` }}
                     >
                       <span className="mr-1.5">•</span>
