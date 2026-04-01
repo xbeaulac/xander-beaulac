@@ -5,8 +5,7 @@ import { useLenisScroll } from "@/components/timeline/useLenisScroll";
 import { timelineItems } from "@/data/timeline";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useEffect } from "react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 gsap.registerPlugin(useGSAP);
 
@@ -81,7 +80,7 @@ export default function TimelinePage() {
         },
         {
           yPercent: 0,
-          duration: 0.75,
+          duration: 0.8,
           ease: "power3.out",
         },
       );
@@ -94,39 +93,32 @@ export default function TimelinePage() {
         },
         {
           yPercent: 0,
-          duration: 0.75,
+          duration: 0.8,
           ease: "power3.out",
         },
-        "+=0.1",
       );
 
       // 3. Header moves up + cards come in AT THE SAME TIME
-      tl.to(
-        headerRef.current,
-        {
-          yPercent: 0, // removes vertical centering
-          top: "1rem", // anchors to top
-          duration: 0.75,
-          ease: "power3.inOut",
-        },
-        "+=0.3",
-      );
+      tl.to(headerRef.current, {
+        yPercent: 0, // removes vertical centering
+        top: "1rem", // anchors to top
+        duration: 0.8,
+        ease: "power3.inOut",
+      });
 
       if (cards) {
         tl.fromTo(
           cards,
           {
             y: "100vh",
-            opacity: 0,
           },
           {
             y: 0,
-            opacity: 1,
-            duration: 0.9,
+            duration: 1.2,
             ease: "power3.out",
             stagger: 0.08,
           },
-          "<", // perfectly synced with header movement
+          "-=0.5", // perfectly synced with header movement
         );
       }
 
@@ -140,7 +132,7 @@ export default function TimelinePage() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.75,
+          duration: 0.8,
           ease: "power3.out",
         },
         "<", // perfectly synced with header and cards
