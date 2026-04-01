@@ -67,8 +67,8 @@ export function TimelineCard({ item }: Props) {
             <div
               className="
             text-xs font-mono text-gray-600 uppercase
-            translate-y-full
-            group-hover:translate-y-0
+            translate-y-0 sm:translate-y-full
+            sm:group-hover:translate-y-0
             transition-transform duration-300
           "
             >
@@ -112,7 +112,7 @@ export function TimelineCard({ item }: Props) {
             {/* Title */}
             <div className="overflow-hidden">
               <h3
-                className="text-sm font-mono font-semibold text-gray-900 mb-1 -translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                className="text-sm font-mono font-semibold text-gray-900 mb-1 translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300"
                 style={{ transitionDelay: "0ms" }}
               >
                 {item.title}
@@ -125,7 +125,7 @@ export function TimelineCard({ item }: Props) {
                 {item.highlights.slice(0, 3).map((highlight, i) => (
                   <li key={i} className="overflow-hidden">
                     <div
-                      className="text-sm font-mono text-gray-600 flex items-start -translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                      className="text-sm font-mono text-gray-600 flex items-start translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300"
                       style={{ transitionDelay: `${(i + 1) * 0}ms` }}
                     >
                       <span className="mr-1.5">•</span>
