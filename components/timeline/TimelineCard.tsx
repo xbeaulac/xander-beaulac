@@ -28,7 +28,7 @@ function getAspectRatio(imageUrl: string | StaticImageData): number {
   return getAspectRatioFromUrl(imageUrl as string);
 }
 
-export function TimelineCard({ item, index }: Props) {
+export function TimelineCard({ item }: Props) {
   const aspectRatio = getAspectRatio(item.imageUrl);
 
   const CardContent = (
@@ -36,8 +36,8 @@ export function TimelineCard({ item, index }: Props) {
       className={`
         timeline-card
         relative
-        w-[24rem]
-        mr-6
+        w-[85vw] sm:w-[24rem]
+        mr-4 sm:mr-6
         ${item.link ? "cursor-pointer" : "cursor-default"}
         pointer-events-auto
       `}

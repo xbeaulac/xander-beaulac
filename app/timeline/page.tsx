@@ -9,10 +9,6 @@ import { useRef, useEffect } from "react";
 
 gsap.registerPlugin(useGSAP);
 
-const CARD_WIDTH = 384; // px (24rem at 16px base)
-const CARD_GAP = 24; // px  (mr-6 = 1.5rem = 24px)
-const CARD_SLOT = CARD_WIDTH + CARD_GAP; // 408px per card
-
 export default function TimelinePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -20,6 +16,12 @@ export default function TimelinePage() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef(0);
+
+  // Calculate responsive card width
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const CARD_WIDTH = isMobile ? window.innerWidth * 0.85 : 384; // 85vw on mobile, 24rem on desktop
+  const CARD_GAP = isMobile ? 16 : 24; // mr-4 on mobile, mr-6 on desktop
+  const CARD_SLOT = CARD_WIDTH + CARD_GAP;
 
   // Simple width calculation - cards + starting padding
   const totalTrackWidth = CARD_GAP + timelineItems.length * CARD_SLOT;
@@ -144,12 +146,12 @@ export default function TimelinePage() {
     >
       <div
         ref={headerRef}
-        className="absolute top-1/2 left-1/2 text-center z-10"
+        className="absolute w-screen px-4 top-1/2 left-1/2 sm:text-center z-10"
       >
         <div className="overflow-hidden">
           <h1
             ref={nameRef}
-            className="leading-[0.90] text-6xl lg:text-nowrap tracking-tight font-black"
+            className="leading-[0.90] text-4xl sm:text-5xl lg:text-6xl text-nowrap tracking-tight font-black"
           >
             XANDER BEAULAC
           </h1>

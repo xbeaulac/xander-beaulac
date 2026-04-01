@@ -43,7 +43,6 @@ function drawTicks(
 
   // The canvas is scaled by devicePixelRatio, so we need to use the logical size
   const logicalWidth = canvas.offsetWidth;
-  const logicalHeight = canvas.offsetHeight;
 
   const viewportCenterX = logicalWidth / 2; // Center of viewport in LOGICAL coordinates
 
@@ -53,7 +52,9 @@ function drawTicks(
 
   // Calculate the range of ticks we need to draw (visible area + buffer)
   const tickStart = Math.floor((0 - scrollOffset - 100) / TICK_INTERVAL);
-  const tickEnd = Math.ceil((logicalWidth - scrollOffset + 100) / TICK_INTERVAL);
+  const tickEnd = Math.ceil(
+    (logicalWidth - scrollOffset + 100) / TICK_INTERVAL,
+  );
 
   // First pass: find the tick closest to viewport center
   let closestTickIndex = -1;
@@ -120,7 +121,6 @@ function drawTicks(
     ctx.lineTo(canvasX, height / 2 + tickH / 2);
     ctx.stroke();
   });
-
 }
 
 export function TimelineRuler({
@@ -175,8 +175,9 @@ export function TimelineRuler({
       if (trackRef.current) {
         const scrollX = getScroll();
         // Apply same modulo wrapping as cards for infinite labels
-        const singleLoopWidth = (items.length * cardSlot);
-        const wrappedX = ((scrollX % singleLoopWidth) - singleLoopWidth) * RULER_SCALE;
+        const singleLoopWidth = items.length * cardSlot;
+        const wrappedX =
+          ((scrollX % singleLoopWidth) - singleLoopWidth) * RULER_SCALE;
         trackRef.current.style.transform = `translate3d(${wrappedX}px, 0, 0)`;
       }
       redraw();
@@ -184,7 +185,16 @@ export function TimelineRuler({
 
     redraw();
     return unsubscribe;
-  }, [getScroll, subscribe, totalWidth, rulerWidth, labelPositions, mouseX, items.length, cardSlot]);
+  }, [
+    getScroll,
+    subscribe,
+    totalWidth,
+    rulerWidth,
+    labelPositions,
+    mouseX,
+    items.length,
+    cardSlot,
+  ]);
 
   // Track mouse position over ruler
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -224,7 +234,9 @@ export function TimelineRuler({
               {[0, 1, 2].map((loopIndex) =>
                 monthMarkers.map((marker) => {
                   // Position label based on the card index × scaled card slot + loop offset
-                  const leftPx = (marker.index * cardSlot * RULER_SCALE) + (loopIndex * rulerWidth);
+                  const leftPx =
+                    marker.index * cardSlot * RULER_SCALE +
+                    loopIndex * rulerWidth;
                   return (
                     <span
                       key={`${loopIndex}-${marker.label}-${marker.index}`}
@@ -234,7 +246,7 @@ export function TimelineRuler({
                       {marker.label}
                     </span>
                   );
-                })
+                }),
               )}
             </div>
           </div>
