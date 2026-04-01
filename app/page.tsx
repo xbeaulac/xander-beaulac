@@ -152,7 +152,7 @@ export default function TimelinePage() {
   return (
     <main
       ref={containerRef}
-      className="hidden w-screen h-screen overflow-hidden"
+      className="hidden w-screen h-screen overflow-hidden font-sans"
     >
       <div
         ref={headerRef}
