@@ -36,7 +36,7 @@ export function TimelineCard({ item }: Props) {
       className={`
         timeline-card
         relative
-        w-[75vw] sm:w-[24rem]
+        w-[70vw] sm:w-[24rem]
         ${item.link ? "cursor-pointer" : "cursor-default"}
         pointer-events-auto
       `}

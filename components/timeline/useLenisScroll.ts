@@ -21,9 +21,9 @@ export function useLenisScroll(wrapperId: string) {
       gestureOrientation: "both",
       smoothWheel: true,
       syncTouch: true,
-      syncTouchLerp: 0.1,
+      syncTouchLerp: 0.08,
       touchInertiaExponent: 1.7,
-      lerp: 0.1,
+      lerp: 0.08,
     });
 
     lenisRef.current = lenis;

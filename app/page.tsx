@@ -45,7 +45,7 @@ export default function TimelinePage() {
         );
         const sign = velocity >= 0 ? -1 : 1;
         const absVelocity = Math.abs(velocity);
-        const rotation = sign * Math.min(80, Math.pow(absVelocity, 1.4) * 0.04);
+        const rotation = sign * Math.min(80, Math.pow(absVelocity, 1.1));
 
         cardInners.forEach((inner) => {
           (inner as HTMLElement).style.transform = `rotateY(${rotation}deg)`;
@@ -178,7 +178,7 @@ export default function TimelinePage() {
       {/* Horizontal scrolling carousel */}
       <div
         id="timeline-scroll-wrapper"
-        className="fixed inset-0 flex items-center overflow-x-auto overflow-y-hidden z-[1]"
+        className="fixed inset-0 flex items-center overflow-x-auto overflow-y-hidden z-1"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <div
@@ -197,7 +197,7 @@ export default function TimelinePage() {
         className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20"
       >
         <div className="font-mono text-sm text-gray-900">
-          <span>Let's talk: </span>
+          <span>Let&apos;s talk: </span>
           <a
             href="mailto:hello@xanderbeaulac.com"
             onClick={handleEmailClick}
@@ -215,7 +215,7 @@ export default function TimelinePage() {
                 copied!
               </span>
               <span
-                className={`absolute bottom-0 left-0 w-full h-[1px] bg-gray-900 origin-left transition-transform duration-300 ease-out ${emailCopied ? "scale-x-0" : "scale-x-0 group-hover:scale-x-100"}`}
+                className={`absolute bottom-0 left-0 w-full h-px bg-gray-900 origin-left transition-transform duration-300 ease-out ${emailCopied ? "scale-x-0" : "scale-x-0 group-hover:scale-x-100"}`}
               ></span>
             </span>
           </a>
