@@ -24,7 +24,6 @@ export function useLenisScroll(wrapperId: string) {
       syncTouchLerp: 0.1,
       touchInertiaExponent: 1.7,
       lerp: 0.1,
-      touchMultiplier: 2,
     });
 
     lenisRef.current = lenis;
