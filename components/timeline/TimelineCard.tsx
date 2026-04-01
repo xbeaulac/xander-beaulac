@@ -3,6 +3,7 @@
 import type { TimelineItem } from "@/types/timeline";
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Props {
   item: TimelineItem;
@@ -100,6 +101,7 @@ export function TimelineCard({ item }: Props) {
                   alt={item.title}
                   fill
                   draggable={false}
+                  loading="eager"
                   className="object-cover"
                   sizes="(max-width: 768px) 320px, 450px"
                 />
@@ -144,7 +146,7 @@ export function TimelineCard({ item }: Props) {
   // If there's a link, wrap in an anchor tag
   if (item.link) {
     return (
-      <a
+      <Link
         href={item.link}
         target="_blank"
         rel="noopener noreferrer"
@@ -152,7 +154,7 @@ export function TimelineCard({ item }: Props) {
         draggable={false}
       >
         {CardContent}
-      </a>
+      </Link>
     );
   }
 
