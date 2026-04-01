@@ -1,9 +1,13 @@
 // components/timeline/TimelineSection.tsx
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { useLenisScroll } from "./useLenisScroll";
 import { TimelineCard } from "./TimelineCard";
 import type { TimelineItem } from "@/types/timeline";
+
+gsap.registerPlugin(useGSAP);
 
 interface Props {
   items: TimelineItem[];
@@ -28,13 +32,7 @@ function getMonthMarkers(items: TimelineItem[]) {
 
 export function TimelineSection({ items }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const [isClient, setIsClient] = useState(false);
   const velocityRef = useRef(0);
-
-  // Fix hydration mismatch by only calculating width on client
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   // Simple width calculation - cards + starting padding
   const totalTrackWidth = CARD_GAP + items.length * CARD_SLOT;

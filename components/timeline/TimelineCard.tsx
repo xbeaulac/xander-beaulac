@@ -43,6 +43,8 @@ export function TimelineCard({ item, index }: Props) {
       `}
       style={{
         perspective: "1200px",
+        transform: "translateY(100vh)",
+        opacity: 0,
       }}
     >
       {/* Inner wrapper for 3D transform */}
