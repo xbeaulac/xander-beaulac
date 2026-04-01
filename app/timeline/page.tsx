@@ -17,33 +17,14 @@ export default function TimelinePage() {
   const trackRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef(0);
 
-  // Calculate responsive sizes
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const CARD_WIDTH = isMobile ? window.innerWidth * 0.85 : 384; // 85vw on mobile, 24rem on desktop
-  const CARD_GAP = isMobile ? 16 : 24; // mr-4 on mobile, mr-6 on desktop
-  const CARD_SLOT = CARD_WIDTH + CARD_GAP;
+  const lenisRef = useLenisScroll("timeline-scroll-wrapper");
 
-  // Width calculation - cards + starting padding
-  const totalTrackWidth = CARD_GAP + timelineItems.length * CARD_SLOT;
-
-  const { getScroll, subscribe, lenisRef } = useLenisScroll(totalTrackWidth);
-
-  // Add timeline-page class to body for overflow control
-  // useEffect(() => {
-  //   document.body.classList.add("timeline-page");
-  //   return () => {
-  //     document.body.classList.remove("timeline-page");
-  //   };
-  // }, []);
-
-  // Apply translate3d to track and rotateY to cards (desktop only)
+  // Apply 3D rotation to cards based on velocity
   useEffect(() => {
-    return subscribe(() => {
-      if (trackRef.current && lenisRef.current) {
-        const scrollX = getScroll();
-        trackRef.current.style.transform = `translate3d(${scrollX}px, 0, 0)`;
+    if (!lenisRef.current) return;
 
-        // Update velocity for cards
+    const unsubscribe = lenisRef.current.on("scroll", () => {
+      if (trackRef.current && lenisRef.current) {
         const velocity = lenisRef.current.velocity || 0;
         velocityRef.current = velocity;
 
@@ -60,7 +41,10 @@ export default function TimelinePage() {
         });
       }
     });
-  }, [getScroll, subscribe, lenisRef]);
+
+    return () => unsubscribe?.();
+  }, [lenisRef]);
+
 
   // GSAP animation sequence
   useGSAP(
@@ -165,39 +149,19 @@ export default function TimelinePage() {
           </p>
         </div>
       </div>
-      {/* Scroll container for Lenis - vertical on desktop, horizontal on mobile */}
+      {/* Horizontal scrolling carousel */}
       <div
-        id="timeline-scroll-container"
-        className="fixed inset-0 overflow-y-scroll sm:overflow-y-scroll overflow-x-scroll sm:overflow-x-hidden"
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          zIndex: -1,
-          pointerEvents: "none",
-        }}
+        id="timeline-scroll-wrapper"
+        className="fixed inset-0 flex items-center overflow-x-auto overflow-y-hidden z-[1]"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {/* Desktop: tall element for vertical scroll, Mobile: wide element for horizontal scroll */}
         <div
-          className="sm:h-auto sm:w-px h-full w-auto"
-          style={{ height: `${totalTrackWidth}px`, width: `${totalTrackWidth}px` }}
-        />
-      </div>
-
-      {/* Fixed visual carousel */}
-      <div className="fixed inset-0 flex items-center overflow-hidden pointer-events-none z-[1]">
-        <div className="relative select-none pointer-events-auto">
-          <div
-            ref={trackRef}
-            className="flex items-center will-change-transform"
-            style={{
-              width: `${totalTrackWidth}px`,
-              paddingLeft: `${CARD_GAP}px`,
-            }}
-          >
-            {timelineItems.map((item, i) => (
-              <TimelineCard key={item.id} item={item} index={i} />
-            ))}
-          </div>
+          ref={trackRef}
+          className="flex items-center select-none"
+        >
+          {timelineItems.map((item, i) => (
+            <TimelineCard key={item.id} item={item} index={i} />
+          ))}
         </div>
       </div>
     </main>

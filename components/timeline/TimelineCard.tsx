@@ -1,8 +1,8 @@
 // components/timeline/TimelineCard.tsx
 "use client";
-import Image from "next/image";
 import type { TimelineItem } from "@/types/timeline";
 import type { StaticImageData } from "next/image";
+import Image from "next/image";
 
 interface Props {
   item: TimelineItem;
@@ -92,6 +92,7 @@ export function TimelineCard({ item }: Props) {
                   muted
                   autoPlay
                   playsInline
+                  draggable={false}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -99,6 +100,7 @@ export function TimelineCard({ item }: Props) {
                   src={item.imageUrl}
                   alt={item.title}
                   fill
+                  draggable={false}
                   className="object-cover"
                   sizes="(max-width: 768px) 320px, 450px"
                 />
@@ -148,6 +150,7 @@ export function TimelineCard({ item }: Props) {
         target="_blank"
         rel="noopener noreferrer"
         className="block group"
+        draggable={false}
       >
         {CardContent}
       </a>
