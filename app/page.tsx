@@ -6,6 +6,7 @@ import { timelineItems } from "@/data/timeline";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef, useEffect } from "react";
+import React from "react";
 
 gsap.registerPlugin(useGSAP);
 
@@ -14,8 +15,18 @@ export default function TimelinePage() {
   const headerRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const emailRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef(0);
+
+  const [emailCopied, setEmailCopied] = React.useState(false);
+
+  const handleEmailClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText("hello@xanderbeaulac.com");
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 1500);
+  };
 
   const lenisRef = useLenisScroll("timeline-scroll-wrapper");
 
@@ -118,6 +129,22 @@ export default function TimelinePage() {
           "<", // perfectly synced with header movement
         );
       }
+
+      // Email slides up from bottom
+      tl.fromTo(
+        emailRef.current,
+        {
+          y: 100,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          ease: "power3.out",
+        },
+        "<", // perfectly synced with header and cards
+      );
     },
     { scope: containerRef },
   );
@@ -161,6 +188,37 @@ export default function TimelinePage() {
           {timelineItems.map((item, i) => (
             <TimelineCard key={item.id} item={item} index={i} />
           ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div
+        ref={emailRef}
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20"
+      >
+        <div className="font-mono text-sm text-gray-900">
+          <span>Let's talk: </span>
+          <a
+            href="mailto:hello@xanderbeaulac.com"
+            onClick={handleEmailClick}
+            className="relative inline-block group cursor-pointer"
+          >
+            <span className="relative flex items-start overflow-hidden">
+              <span
+                className={`inline-block transition-transform duration-300 ${emailCopied ? "-translate-y-full" : "translate-y-0"}`}
+              >
+                hello@xanderbeaulac.com
+              </span>
+              <span
+                className={`absolute inset-0 inline-block transition-transform duration-300 ${emailCopied ? "translate-y-0" : "translate-y-full"}`}
+              >
+                copied!
+              </span>
+              <span
+                className={`absolute bottom-0 left-0 w-full h-[1px] bg-gray-900 origin-left transition-transform duration-300 ease-out ${emailCopied ? "scale-x-0" : "scale-x-0 group-hover:scale-x-100"}`}
+              ></span>
+            </span>
+          </a>
         </div>
       </div>
     </main>
