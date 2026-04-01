@@ -51,7 +51,7 @@ export default function TimelinePage() {
         );
         const sign = velocity >= 0 ? -1 : 1;
         const absVelocity = Math.abs(velocity);
-        const rotation = sign * Math.min(75, Math.pow(absVelocity, 1.8) * 0.04);
+        const rotation = sign * Math.min(80, Math.pow(absVelocity, 1.4) * 0.04);
 
         cardInners.forEach((inner) => {
           (inner as HTMLElement).style.transform = `rotateY(${rotation}deg)`;
