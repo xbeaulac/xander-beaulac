@@ -17,10 +17,9 @@ export default function TimelinePage() {
   const trackRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef(0);
 
-  // Calculate responsive card width
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const CARD_WIDTH = isMobile ? window.innerWidth * 0.85 : 384; // 85vw on mobile, 24rem on desktop
-  const CARD_GAP = isMobile ? 16 : 24; // mr-4 on mobile, mr-6 on desktop
+  // Calculate based on desktop size (larger) to ensure enough scroll area
+  const CARD_WIDTH = 384; // 24rem on desktop
+  const CARD_GAP = 24; // mr-6 on desktop
   const CARD_SLOT = CARD_WIDTH + CARD_GAP;
 
   // Simple width calculation - cards + starting padding
@@ -168,15 +167,22 @@ export default function TimelinePage() {
       {/* Scroll container for Lenis */}
       <div
         id="timeline-scroll-container"
-        className="fixed inset-0 overflow-y-scroll"
+        className="fixed inset-0 overflow-x-scroll sm:overflow-x-hidden sm:overflow-y-scroll"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           zIndex: -1,
-          pointerEvents: "none",
+          pointerEvents: "auto",
         }}
       >
-        <div style={{ height: `${totalTrackWidth}px`, width: "1px" }} />
+        {/* Mobile: horizontal scroll area, Desktop: vertical scroll area */}
+        <div
+          className="h-full w-full sm:h-auto sm:w-px"
+          style={{
+            width: `${totalTrackWidth}px`,
+            height: `${totalTrackWidth}px`
+          }}
+        />
       </div>
 
       {/* Fixed visual carousel */}

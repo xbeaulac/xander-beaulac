@@ -24,14 +24,17 @@ export function useLenisScroll(totalWidth: number) {
     const content = scrollContainer.firstElementChild as HTMLElement;
     if (!content) return;
 
+    // Detect mobile (client-side only, no SSR)
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+
     // Proper Lenis setup with wrapper and content
-    // Use window as eventsTarget so scroll container doesn't need pointer events
     const lenis = new Lenis({
       wrapper: scrollContainer,
       content: content,
-      eventsTarget: window,
-      orientation: "vertical",
+      eventsTarget: scrollContainer,
+      orientation: isMobile ? "horizontal" : "vertical",
       smoothWheel: true,
+      smoothTouch: true,
       lerp: 0.08,
       touchMultiplier: 2,
     });
@@ -40,9 +43,15 @@ export function useLenisScroll(totalWidth: number) {
 
     // Listen to Lenis scroll events and map to horizontal position
     lenis.on("scroll", ({ scroll, limit }: { scroll: number; limit: number }) => {
-      const progress = limit > 0 ? scroll / limit : 0;
-      const maxX = -(totalWidth - window.innerWidth);
-      scrollXRef.current = progress * maxX;
+      if (isMobile) {
+        // On mobile, horizontal scroll directly maps to position
+        scrollXRef.current = -scroll;
+      } else {
+        // On desktop, vertical scroll progress maps to horizontal position
+        const progress = limit > 0 ? scroll / limit : 0;
+        const maxX = -(totalWidth - window.innerWidth);
+        scrollXRef.current = progress * maxX;
+      }
       listenersRef.current.forEach((cb) => cb());
     });
 
