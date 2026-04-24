@@ -6,6 +6,7 @@ import pixelPeopleImage from "@/public/events/pixel-people.png";
 import runClubImage from "@/public/events/running-club.jpg";
 import skiingImage from "@/public/events/skiing.jpg";
 import stoodoiusImage from "@/public/events/stoodious.png";
+import wavesCover from "@/public/events/waves-cover.jpeg";
 import youngMeImage from "@/public/events/little-me.jpg";
 import useHomeLoansImage from "@/public/events/usa-home-loans.png";
 import type { TimelineItem } from "@/types/timeline";
@@ -52,6 +53,16 @@ export const timelineItems: TimelineItem[] = [
       "Built their landing page 2 hours later",
       "Shipped MVP doing full stack web development",
     ],
+  },
+  {
+    id: 4,
+    month: "April",
+    year: 2025,
+    category: "Music",
+    title: "Released Waves",
+    imageUrl: wavesCover,
+    link: "https://open.spotify.com/track/3aQ5szsZqiRR0KmeQnEf8p",
+    highlights: ["Shifted artistic direction to indie pop", "Recorded acoustic instruments"],
   },
   {
     id: 5,
