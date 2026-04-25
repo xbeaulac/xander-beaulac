@@ -10,18 +10,12 @@ interface Props {
   index: number;
 }
 
-// Extract dimensions from URL like "https://picsum.photos/seed/ski/400/450"
 function getAspectRatioFromUrl(url: string): number {
   const match = url.match(/\/(\d+)\/(\d+)$/);
-  if (match) {
-    const width = parseInt(match[1]);
-    const height = parseInt(match[2]);
-    return width / height;
-  }
-  return 0.794; // default portrait aspect ratio
+  if (match) return parseInt(match[1]) / parseInt(match[2]);
+  return 0.794;
 }
 
-// Get aspect ratio from static image data or URL
 function getAspectRatio(imageUrl: string | StaticImageData): number {
   if (typeof imageUrl === "object" && "width" in imageUrl) {
     return imageUrl.width / imageUrl.height;
@@ -36,8 +30,8 @@ export function TimelineCard({ item }: Props) {
     <article
       className={`
         timeline-card
-        relative
-        w-[70vw] sm:w-[24rem]
+        flex flex-col
+        w-[24rem] max-w-[70vw]
         ${item.link ? "cursor-pointer" : "cursor-default"}
         pointer-events-auto
       `}
@@ -46,112 +40,70 @@ export function TimelineCard({ item }: Props) {
         transform: "translateY(100vh)",
       }}
     >
-      {/* Inner wrapper for 3D transform */}
       <div
-        className="timeline-card-inner transition-transform duration-300 ease-out"
-        style={{
-          transformStyle: "preserve-3d",
-          transformOrigin: "center center",
-        }}
+        className="timeline-card-inner flex flex-col transition-transform duration-300 ease-out"
+        style={{ transformStyle: "preserve-3d", transformOrigin: "center center" }}
       >
-        {/* Card content wrapper */}
-        <div className="relative">
-          {/* Date label — slides in from top on hover */}
-          <div
-            className="
-          absolute bottom-full left-0 mb-2
-          overflow-hidden
-          w-full
-        "
-          >
-            <div
-              className="
-            text-xs font-mono text-gray-600 uppercase
-            translate-y-0 sm:translate-y-full
-            sm:group-hover:translate-y-0
-            transition-transform duration-300
-          "
-            >
-              {item.month} {item.year}
-            </div>
+        {/* Date label — hidden by default on sm+, slides in on hover */}
+        <div className="overflow-hidden mb-2 h-4">
+          <div className="text-xs font-mono text-gray-600 uppercase translate-y-0 sm:translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300">
+            {item.month} {item.year}
           </div>
+        </div>
 
-          {/* Media container */}
-          <div
-            className="relative w-full"
-            style={{ aspectRatio: aspectRatio.toString() }}
-          >
-            <figure
-              className={`absolute inset-0 overflow-hidden origin-top-left rounded-lg bg-gray-300 ${item.needsBorder ? "border border-gray-200" : ""}`}
-            >
-              {item.videoUrl ? (
-                <video
-                  src={item.videoUrl}
-                  loop
-                  muted
-                  autoPlay
-                  playsInline
-                  draggable={false}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Image
-                  src={item.imageUrl}
-                  alt={item.title}
-                  fill
-                  draggable={false}
-                  loading="eager"
-                  className="object-cover"
-                  sizes="(max-width: 768px) 320px, 450px"
-                />
-              )}
-            </figure>
+        {/* Media — fixed width, height derived from aspect ratio, capped */}
+        <div
+          className={`relative w-full overflow-hidden rounded-lg bg-gray-300 ${item.needsBorder ? "border border-gray-200" : ""}`}
+          style={{ aspectRatio: aspectRatio.toString(), maxHeight: "min(55dvh, 26rem)" }}
+        >
+          {item.videoUrl ? (
+            <video
+              src={item.videoUrl}
+              loop muted autoPlay playsInline draggable={false}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <Image
+              src={item.imageUrl}
+              alt={item.title}
+              fill
+              draggable={false}
+              loading="eager"
+              className="object-cover"
+              sizes="(max-width: 768px) 70vw, 384px"
+            />
+          )}
+        </div>
+
+        {/* Title + highlights — hidden by default on sm+, slides in on hover */}
+        <div className="mt-2">
+          <div className="overflow-hidden">
+            <h3 className="text-sm font-mono font-semibold text-gray-900 mb-1 translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300">
+              {item.title}
+            </h3>
           </div>
-
-          {/* Title and highlights — cascade animation */}
-          <div className="absolute top-full left-0 mt-2 w-full">
-            {/* Title */}
-            <div className="overflow-hidden">
-              <h3
-                className="text-sm font-mono font-semibold text-gray-900 mb-1 translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300"
-                style={{ transitionDelay: "0ms" }}
-              >
-                {item.title}
-              </h3>
-            </div>
-
-            {/* Highlights - each with cascading delay */}
-            {item.highlights && item.highlights.length > 0 && (
-              <ul className="space-y-1">
-                {item.highlights.slice(0, 3).map((highlight, i) => (
-                  <li key={i} className="overflow-hidden">
-                    <div
-                      className="text-xs sm:text-sm font-mono text-gray-600 flex items-start translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300"
-                      style={{ transitionDelay: `${(i + 1) * 0}ms` }}
-                    >
-                      <span className="mr-1.5">•</span>
-                      <span>{highlight}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {item.highlights && item.highlights.length > 0 && (
+            <ul className="space-y-1">
+              {item.highlights.slice(0, 3).map((highlight, i) => (
+                <li key={i} className="overflow-hidden">
+                  <div
+                    className="text-xs font-mono text-gray-600 flex items-start translate-y-0 sm:-translate-y-full sm:group-hover:translate-y-0 transition-transform duration-300"
+                  >
+                    <span className="mr-1.5">•</span>
+                    <span>{highlight}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </article>
   );
 
-  // If there's a link, wrap in an anchor tag
   if (item.link) {
     return (
-      <Link
-        href={item.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block group"
-        draggable={false}
-      >
+      <Link href={item.link} target="_blank" rel="noopener noreferrer" className="block group" draggable={false}>
         {CardContent}
       </Link>
     );

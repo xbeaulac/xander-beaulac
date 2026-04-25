@@ -62,80 +62,38 @@ export default function TimelinePage() {
 
       const cards = trackRef.current?.querySelectorAll(".timeline-card");
 
-      tl.set(containerRef.current, {
-        display: "block",
-      });
-
-      // 0. Set initial transform state (replaces Tailwind centering)
-      tl.set(headerRef.current, {
-        xPercent: -50,
-        yPercent: -50,
-      });
+      tl.set(containerRef.current, { display: "flex" });
 
       // 1. Name in
       tl.fromTo(
         nameRef.current,
-        {
-          yPercent: 100,
-        },
-        {
-          yPercent: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        },
+        { yPercent: 100 },
+        { yPercent: 0, duration: 0.8, ease: "power3.out" },
       );
 
       // 2. Subtitle in
       tl.fromTo(
         subtitleRef.current,
-        {
-          yPercent: 100,
-        },
-        {
-          yPercent: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        },
+        { yPercent: 100 },
+        { yPercent: 0, duration: 0.8, ease: "power3.out" },
       );
 
-      // 3. Header moves up + cards come in AT THE SAME TIME
-      tl.to(headerRef.current, {
-        yPercent: 0, // removes vertical centering
-        top: "1rem", // anchors to top
-        duration: 0.8,
-        ease: "power3.inOut",
-      });
-
+      // 3. Cards come in
       if (cards) {
         tl.fromTo(
           cards,
-          {
-            y: "100vh",
-          },
-          {
-            y: 0,
-            duration: 1.2,
-            ease: "power3.out",
-            stagger: 0.08,
-          },
-          "-=0.5", // perfectly synced with header movement
+          { y: "100vh" },
+          { y: 0, duration: 1.2, ease: "power3.out", stagger: 0.08 },
+          "-=0.5",
         );
       }
 
       // Email slides up from bottom
       tl.fromTo(
         emailRef.current,
-        {
-          y: 100,
-          opacity: 0,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        "<", // perfectly synced with header and cards
+        { y: 100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+        "<",
       );
     },
     { scope: containerRef },
@@ -144,12 +102,10 @@ export default function TimelinePage() {
   return (
     <main
       ref={containerRef}
-      className="hidden w-screen h-screen overflow-hidden font-sans"
+      className="hidden flex-col w-screen h-dvh overflow-hidden font-sans px-4 sm:px-6 py-4 gap-4"
     >
-      <div
-        ref={headerRef}
-        className="absolute w-screen px-4 top-1/2 left-1/2 sm:text-center z-10"
-      >
+      {/* Header */}
+      <div ref={headerRef} className="shrink-0 sm:text-center">
         <div className="overflow-hidden">
           <h1
             ref={nameRef}
@@ -167,15 +123,16 @@ export default function TimelinePage() {
           </p>
         </div>
       </div>
+
       {/* Horizontal scrolling carousel */}
       <div
         id="timeline-scroll-wrapper"
-        className="fixed inset-0 flex items-center overflow-x-auto overflow-y-hidden z-1"
+        className="flex-1 min-h-0 flex items-center overflow-x-auto overflow-y-hidden"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <div
           ref={trackRef}
-          className="flex items-center select-none px-4 sm:px-6 gap-4 sm:gap-6"
+          className="flex items-end select-none gap-4 sm:gap-6"
         >
           {timelineItems.map((item, i) => (
             <TimelineCard key={item.id} item={item} index={i} />
@@ -184,10 +141,7 @@ export default function TimelinePage() {
       </div>
 
       {/* Footer */}
-      <div
-        ref={emailRef}
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20"
-      >
+      <div ref={emailRef} className="shrink-0 flex justify-center">
         <div className="font-mono text-sm text-gray-900 flex gap-8">
           <a
             href="mailto:hello@xanderbeaulac.com"
@@ -206,7 +160,7 @@ export default function TimelinePage() {
                 copied!
               </span>
               <span
-                className={`absolute bottom-0 left-0 w-full h-px bg-gray-900 origin-left transition-transform duration-300 ease-out ${emailCopied ? "scale-x-0" : "scale-x-0 group-hover:scale-x-100"}`}
+                className={`absolute bottom-0 left-0 w-full h-px bg-gray-900 origin-left transition-transform duration-300 ease-out ${emailCopied ? "scale-x-0" : "scale-x-100 group-hover:scale-x-0"}`}
               ></span>
             </span>
           </a>
@@ -218,7 +172,7 @@ export default function TimelinePage() {
           >
             <span className="relative inline-block">
               resumé
-              <span className="absolute bottom-0 left-0 w-full h-px bg-gray-900 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
+              <span className="absolute bottom-0 left-0 w-full h-px bg-gray-900 origin-left scale-x-100 group-hover:scale-x-0 transition-transform duration-300 ease-out"></span>
             </span>
           </a>
         </div>
