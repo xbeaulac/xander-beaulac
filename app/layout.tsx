@@ -1,12 +1,7 @@
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-
-const cabinetGrotesk = localFont({
-  src: "./fonts/CabinetGrotesk-Variable.woff2",
-  variable: "--font-cabinet-grotesk",
-  display: "swap",
-});
 
 const satoshi = localFont({
   src: [
@@ -58,12 +53,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overscroll-none">
-      <body
-        className={`${cabinetGrotesk.variable} ${satoshi.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={cn("overscroll-none", "font-sans", satoshi.variable)}
+    >
+      <body className={`antialiased`}>{children}</body>
     </html>
   );
 }
