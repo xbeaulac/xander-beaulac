@@ -64,6 +64,9 @@ export default function TimelinePage() {
 
       tl.set(containerRef.current, { display: "flex" });
 
+      // Start header pushed down to vertical center of viewport
+      tl.set(headerRef.current, { marginTop: "35dvh" });
+
       // 1. Name in
       tl.fromTo(
         nameRef.current,
@@ -78,13 +81,18 @@ export default function TimelinePage() {
         { yPercent: 0, duration: 0.8, ease: "power3.out" },
       );
 
-      // 3. Cards come in
+      // 3. Header slides up to its natural position + cards come in
+      tl.to(
+        headerRef.current,
+        { marginTop: 0, duration: 0.9, ease: "power3.inOut" },
+      );
+
       if (cards) {
         tl.fromTo(
           cards,
           { y: "100vh" },
           { y: 0, duration: 1.2, ease: "power3.out", stagger: 0.08 },
-          "-=0.5",
+          "-=0.6",
         );
       }
 
@@ -132,7 +140,7 @@ export default function TimelinePage() {
       >
         <div
           ref={trackRef}
-          className="flex items-end select-none gap-4 sm:gap-6"
+          className="flex items-center select-none gap-4 sm:gap-6"
         >
           {timelineItems.map((item, i) => (
             <TimelineCard key={item.id} item={item} index={i} />
