@@ -2,13 +2,13 @@
 "use client";
 import { TimelineCard } from "@/components/timeline/TimelineCard";
 import { useLenisScroll } from "@/components/timeline/useLenisScroll";
-import { timelineItems } from "@/data/timeline";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { timelineItems } from "@/data/timeline";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import React, { useEffect, useRef, useState } from "react";
@@ -233,25 +233,43 @@ export default function TimelinePage() {
         {/* Track dropdown — hidden until after sound choice, lives in main UI */}
         <div
           ref={trackDropdownRef}
-          className="mt-3 flex justify-start sm:justify-center items-center gap-3"
+          className="mt-3 flex justify-start sm:justify-center items-center gap-2"
           style={{ display: "none" }}
         >
+          {/* Play/pause */}
+          <button
+            onClick={() => {
+              if (!audioRef.current) {
+                selectTrack(selectedTrackRef.current);
+                return;
+              }
+              if (isPlaying) {
+                audioRef.current.pause();
+                setIsPlaying(false);
+              } else {
+                audioRef.current.play().catch(() => {});
+                setIsPlaying(true);
+              }
+            }}
+            className="text-gray-600 hover:text-gray-900 transition-colors duration-200 cursor-pointer"
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? (
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16" rx="1" />
+                <rect x="14" y="4" width="4" height="16" rx="1" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M5 3l14 9-14 9V3z" />
+              </svg>
+            )}
+          </button>
+
+          {/* Track selector */}
           <DropdownMenu>
             <DropdownMenuTrigger className="font-mono text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 flex items-center gap-2 cursor-pointer outline-none">
-              <svg
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M9 18V5l12-2v13" />
-                <circle cx="6" cy="18" r="3" fill="currentColor" />
-                <circle cx="18" cy="16" r="3" fill="currentColor" />
-              </svg>
-              {trackLabel(selectedTrack)}
+              <span className="mb-0.5">{trackLabel(selectedTrack)}</span>
               <svg className="w-3.5 h-3.5" viewBox="0 0 10 6" fill="none">
                 <path
                   d="M1 1l4 4 4-4"
@@ -277,40 +295,6 @@ export default function TimelinePage() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Play/pause button */}
-          <button
-            onClick={() => {
-              if (!audioRef.current) {
-                selectTrack(selectedTrackRef.current);
-                return;
-              }
-              if (isPlaying) {
-                audioRef.current.pause();
-                setIsPlaying(false);
-              } else {
-                audioRef.current.play().catch(() => {});
-                setIsPlaying(true);
-              }
-            }}
-            className="text-gray-600 hover:text-gray-900 transition-colors duration-200 cursor-pointer"
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            {isPlaying ? (
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="6" y="4" width="4" height="16" rx="1" />
-                <rect x="14" y="4" width="4" height="16" rx="1" />
-              </svg>
-            ) : (
-              <svg
-                className="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="currentColor" className="w-4 h-4"
-              >
-                <path d="M5 3l14 9-14 9V3z" />
-              </svg>
-            )}
-          </button>
         </div>
 
         {/* Sound prompt — shown during intro only */}
@@ -320,7 +304,7 @@ export default function TimelinePage() {
         >
           <button
             onClick={() => proceedToTimeline(true)}
-            className="font-mono text-sm px-5 py-2 bg-gray-900 text-[var(--color-cornsilk)] rounded-full cursor-pointer hover:bg-gray-700 transition-colors duration-200"
+            className="font-mono text-sm px-5 py-2 bg-gray-900 text-(--color-cornsilk) rounded-full cursor-pointer hover:bg-gray-700 transition-colors duration-200"
           >
             Continue with sound
           </button>
